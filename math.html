@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Math</title>
+	<style>
+        ul {
+            font-size: 32px;
+        }
+
+        li {
+            height: 50px;
+        }
+
+        .correct {
+            background-image: url('data:image/svg+xml,%3Csvg%20t%3D%221657806441162%22%20class%3D%22icon%22%20viewBox%3D%220%200%201024%201024%22%20version%3D%221.1%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20p-id%3D%222245%22%20width%3D%2232%22%20height%3D%2232%22%3E%3Cpath%20d%3D%22M883.498667%20268.501333a42.666667%2042.666667%200%200%200-60.330667%200L426.666667%20665.002667l-225.834667-225.834667a42.666667%2042.666667%200%201%200-60.330667%2060.330667l256%20256a42.666667%2042.666667%200%200%200%2060.330667%200l426.666667-426.666667a42.666667%2042.666667%200%200%200%200-60.330667z%22%20fill%3D%22%2375C82B%22%20p-id%3D%222246%22%3E%3C/path%3E%3C/svg%3E');
+            width: 32px;
+            height: 32px;
+            display: inline-block;
+        }
+
+        .wrong {
+            background-image: url('data:image/svg+xml,%3Csvg%20t%3D%221657807398664%22%20class%3D%22icon%22%20viewBox%3D%220%200%201024%201024%22%20version%3D%221.1%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20p-id%3D%222447%22%20width%3D%2232%22%20height%3D%2232%22%3E%3Cpath%20d%3D%22M225.834667%20225.834667a42.666667%2042.666667%200%200%201%2060.330666%200l512%20512a42.666667%2042.666667%200%200%201-60.330666%2060.330666l-512-512a42.666667%2042.666667%200%200%201%200-60.330666z%22%20fill%3D%22%23d81e06%22%20p-id%3D%222448%22%3E%3C/path%3E%3Cpath%20d%3D%22M798.165333%20225.834667a42.666667%2042.666667%200%200%200-60.330666%200l-512%20512a42.666667%2042.666667%200%200%200%2060.330666%2060.330666l512-512a42.666667%2042.666667%200%200%200%200-60.330666z%22%20fill%3D%22%23d81e06%22%20p-id%3D%222449%22%3E%3C/path%3E%3C/svg%3E');
+            width: 32px;
+            height: 32px;
+            display: inline-block;
+        }
+
+        .answer {
+            font-size: 24px;
+            width: 50px;
+        }
+	</style>
+	
+	<script>
+		function check(ele) {
+			ele.nextElementSibling.className = ele.value == ele.alt ? 'correct' : 'wrong';
+		}
+		
+		function checkInput(ele) {
+			if (ele.value == ele.alt) {
+				if (ele.parentElement.nextElementSibling)
+					ele.parentElement.nextElementSibling.getElementsByTagName('input')[0].focus();
+				else if (checkFinish())
+					finish();
+			}
+		}
+		
+		function checkFinish() {
+			return document.querySelectorAll('.correct').length === qn - 1;
+		}
+		
+		const qn = 20;
+		var finished = false;
+		var start = Date.now();
+		
+		function init() {
+			const ul = document.getElementById('c') ;
+			var s = '';
+			for (let i = 0; i < qn; i++) {
+				var q = Math.floor(Math.random() * 20) + (Math.random() > 0.6 ? '+' : '-') + Math.floor(Math.random() * 10);
+				var r = eval(q);
+				s += '<li><span>' + q + ' </span> = <input type="number" class="answer" onchange="check(this)" oninput="checkInput(this)" alt="' + r + '"> <div class=""></div></li>';
+			}
+			ul.innerHTML = s;
+			
+			setInterval(() => {
+				if (!finished) {
+					const sec = (Date.now() - start) / 1000;
+					const s = Math.floor(sec % 60);
+					document.getElementById('timer').innerText = Math.floor(sec / 60) + ':' + (s < 10 ? '0' + s : s);
+				}
+			}, 1000);
+		}
+		
+		function finish() {
+			finished = true;
+			document.querySelectorAll('input.answer').forEach(e => {
+				e.disabled = true;
+			});
+			document.getElementById('again').style.display = 'inline-block';
+		}
+	
+	</script>
+</head>
+<body onload="init()">
+<div style="margin-left: 100px">
+	<ul id="c">
+		<li><span>234+3 </span> = <input class="answer" on="check(this)">
+			<div class="correct"></div>
+		</li>
+	</ul>
+	<div style="font-size: 40px">
+		<span id="timer" style="width: 200px">0:00</span>
+		<input id="again" type="button" style="font-size: 32px; display: none;" value="再来一局"
+		       onclick="location.reload()">
+	</div>
+</div>
+</body>
+</html>
